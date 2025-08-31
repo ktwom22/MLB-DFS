@@ -4,74 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>MLB Optimizer</title>
-
-    <!-- Favicon (optional, kept here) -->
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { margin-bottom: 20px; }
+        form div { margin-bottom: 10px; }
+        table { border-collapse: collapse; width: 100%; margin-bottom: 20px; }
+        th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        .lineup-card { border: 1px solid #ddd; padding: 10px; margin-bottom: 15px; border-radius: 5px; }
+    </style>
 </head>
 <body>
-    <div>
-        <h1>⚾ MLB DFS Lineup Optimizer</h1>
+    <h1>⚾ MLB DFS Lineup Optimizer</h1>
 
-        <!-- Form to input lineup data -->
-        <form method="get">
-            <div>
-                <label>Lineups to Generate</label>
-                <input type="number" name="count" value="{{ count or 5 }}">
-            </div>
-            <div>
-                <label>Stack Team (optional)</label>
-                <input type="text" name="team" value="{{ stack_team or '' }}">
-            </div>
-            <div>
-                <label>Stack Size</label>
-                <input type="number" name="stack" value="{{ stack_size or 0 }}">
-            </div>
-            <div>
-                <label>Max Exposure (%)</label>
-                <input type="number" name="exposure" value="{{ exposure_pct or 100 }}">
-            </div>
-            <div>
-                <button type="submit">Generate Lineups</button>
-            </div>
-        </form>
+    <!-- Form to input lineup data -->
+    <form method="get">
+        <div>
+            <label>Lineups to Generate:</label>
+            <input type="number" name="count" value="{{ count or 5 }}">
+        </div>
+        <div>
+            <label>Stack Team (optional):</label>
+            <input type="text" name="team" value="{{ stack_team or '' }}">
+        </div>
+        <div>
+            <label>Stack Size:</label>
+            <input type="number" name="stack" value="{{ stack_size or 0 }}">
+        </div>
+        <div>
+            <label>Max Exposure (%):</label>
+            <input type="number" name="exposure" value="{{ exposure_pct or 100 }}">
+        </div>
+        <div>
+            <button type="submit">Generate Lineups</button>
+        </div>
+    </form>
 
-        <!-- Show error message if any -->
-        {% if error %}
-            <div>
-                <strong>Error:</strong> {{ error }}
-            </div>
-        {% endif %}
+    <!-- Show error message if any -->
+    {% if error %}
+        <div style="color:red; margin:10px 0;">
+            <strong>Error:</strong> {{ error }}
+        </div>
+    {% endif %}
 
-        {% if prompt %}
-            <div>
-                Use the form above to generate lineups.
-            </div>
-        {% endif %}
+    {% if prompt %}
+        <div>Use the form above to generate lineups.</div>
+    {% endif %}
 
-        <!-- Display generated lineups -->
-        {% if lineups %}
-            <h2>Generated Lineups</h2>
-            <div>
-                {% for lineup in lineups %}
-                    <div>
-                        <div>
-                            <strong>Projected Points:</strong> {{ lineup.points }} |
-                            <strong>Salary:</strong> ${{ lineup.salary }}
-                        </div>
-                        <div>
-                            <ul>
-                                {% for player in lineup.players %}
-                                    <li>
-                                        <strong>{{ player.Position }}</strong> - {{ player.Name }}
-                                        ({{ player.Team }}) - ${{ player.Salary }} - {{ player.Points }} pts
-                                    </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                {% endfor %}
+    <!-- Display generated lineups -->
+    {% if lineups %}
+        <h2>Generated Lineups</h2>
+        {% for lineup in lineups %}
+            <div class="lineup-card">
+                <div><strong>Projected Points:</strong> {{ lineup.points }} |
+                     <strong>Salary:</strong> ${{ lineup.salary }}</div>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Position</th>
+                            <th>Name</th>
+                            <th>Team</th>
+                            <th>Salary</th>
+                            <th>Points</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for player in lineup.players %}
+                        <tr>
+                            <td>{{ player.Position }}</td>
+                            <td>{{ player.Name }}</td>
+                            <td>{{ player.Team }}</td>
+                            <td>${{ player.Salary }}</td>
+                            <td>{{ player.Points }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-        {% endif %}
-    </div>
+        {% endfor %}
+    {% endif %}
 </body>
 </html>
