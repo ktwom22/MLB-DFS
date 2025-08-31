@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>MLB Optimizer</title>
+
+    <!-- Favicon (optional, kept here) -->
+    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
+</head>
+<body>
+    <div>
+        <h1>⚾ MLB DFS Lineup Optimizer</h1>
+
+        <!-- Form to input lineup data -->
+        <form method="get">
+            <div>
+                <label>Lineups to Generate</label>
+                <input type="number" name="count" value="{{ count or 5 }}">
+            </div>
+            <div>
+                <label>Stack Team (optional)</label>
+                <input type="text" name="team" value="{{ stack_team or '' }}">
+            </div>
+            <div>
+                <label>Stack Size</label>
+                <input type="number" name="stack" value="{{ stack_size or 0 }}">
+            </div>
+            <div>
+                <label>Max Exposure (%)</label>
+                <input type="number" name="exposure" value="{{ exposure_pct or 100 }}">
+            </div>
+            <div>
+                <button type="submit">Generate Lineups</button>
+            </div>
+        </form>
+
+        <!-- Show error message if any -->
+        {% if error %}
+            <div>
+                <strong>Error:</strong> {{ error }}
+            </div>
+        {% endif %}
+
+        {% if prompt %}
+            <div>
+                Use the form above to generate lineups.
+            </div>
+        {% endif %}
+
+        <!-- Display generated lineups -->
+        {% if lineups %}
+            <h2>Generated Lineups</h2>
+            <div>
+                {% for lineup in lineups %}
+                    <div>
+                        <div>
+                            <strong>Projected Points:</strong> {{ lineup.points }} |
+                            <strong>Salary:</strong> ${{ lineup.salary }}
+                        </div>
+                        <div>
+                            <ul>
+                                {% for player in lineup.players %}
+                                    <li>
+                                        <strong>{{ player.Position }}</strong> - {{ player.Name }}
+                                        ({{ player.Team }}) - ${{ player.Salary }} - {{ player.Points }} pts
+                                    </li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    </div>
+</body>
+</html>
