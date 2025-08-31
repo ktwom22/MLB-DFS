@@ -69,14 +69,17 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for player in lineup.players %}
-                        <tr>
-                            <td>{{ player.Position }}</td>
-                            <td>{{ player.Name }}</td>
-                            <td>{{ player.Team }}</td>
-                            <td>${{ player.Salary }}</td>
-                            <td>{{ player.Points }}</td>
-                        </tr>
+                        {% set position_order = ['P', 'C', '1B', '2B', '3B', 'SS', 'OF'] %}
+                        {% for pos in position_order %}
+                            {% for player in lineup.players if player.Position == pos %}
+                            <tr>
+                                <td>{{ player.Position }}</td>
+                                <td>{{ player.Name }}</td>
+                                <td>{{ player.Team }}</td>
+                                <td>${{ player.Salary }}</td>
+                                <td>{{ player.Points }}</td>
+                            </tr>
+                            {% endfor %}
                         {% endfor %}
                     </tbody>
                 </table>
